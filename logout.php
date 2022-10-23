@@ -8,4 +8,6 @@ session_destroy();
 // Hapus semua isi variabel session
 session_unset();
 
+$_SESSION = [];
+
 header("Location:form.php");

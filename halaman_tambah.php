@@ -7,6 +7,11 @@ session_start();
 if (!isset($_SESSION["username"])) {
     header("location:form.php");
 }
+
+if (isset($_GET['btn_cari'])) {
+    $cari = $_GET['cari'];
+    echo "<b>Hasil pencarian : " . $cari . "</b>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,12 +25,19 @@ if (!isset($_SESSION["username"])) {
 <body>
 <center><h1>CREATE ADD DATA PAGE USING PHP AND MYSQL</h1></center>
 <form method="post" action="function_tambah.php">
-    <input type="text" name="nama" placeholder="Nama">
-    <input type="text" name="npm" placeholder="Npm">
-    <input type="text" name="kelas" placeholder="Kelas">
-    <input type="text" name="alamat" placeholder="Alamat">
+    <input type="text" name="nama" placeholder="Nama" required>
+    <input type="text" name="npm" placeholder="Npm" required>
+    <input type="text" name="kelas" placeholder="Kelas" required>
+    <input type="text" name="alamat" placeholder="Alamat" required>
     <input type="submit" name="kirim">
   </form>
+  <br>
+<form action="halaman_tambah.php" method="get">
+    <label>Cari :</label>
+	<input type="text" name="cari">
+	<input type="submit" value="Cari" name="btn_cari">
+</form>
+
   <br/>
 
   <table border="1" bgcolor="white">
@@ -38,28 +50,38 @@ if (!isset($_SESSION["username"])) {
 			<th>OPTIONS</th>
 		</tr>
 
-            <?php
+
+ <?php
+if (isset($_GET['btn_cari'])) {
+    $name = $_GET['cari'];
+    $sql = mysqli_query($conn, "SELECT * FROM data_mhs where nama like '%$name%'");
+
+} else {
+    $sql = mysqli_query($conn, "SELECT * FROM data_mhs");
+}
+
 $no = 1;
-$sql = mysqli_query($conn, "SELECT * FROM data_mhs");
 while ($data = mysqli_fetch_assoc($sql)) {
     ?>
-    <tr>
-				<td><?php echo $no++; ?></td>
-				<td><?php echo $data['nama']; ?></td>
-				<td><?php echo $data['npm']; ?></td>
-				<td><?php echo $data['kelas']; ?></td>
-				<td><?php echo $data['alamat']; ?></td>
-                <td>
-                <!-- CARA UPDATE/DELETE MEREKA BUTUH ID DARI URL MAKANYA KASIH MASUKAN DI href nya!!-->
-               <?php
+        <tr>
+                    <td><?php echo $no++; ?></td>
+                    <td><?php echo $data['nama']; ?></td>
+                    <td><?php echo $data['npm']; ?></td>
+                    <td><?php echo $data['kelas']; ?></td>
+                    <td><?php echo $data['alamat']; ?></td>
+                    <td>
+                    <!-- CARA UPDATE/DELETE MEREKA BUTUH ID DARI URL MAKANYA KASIH MASUKAN DI href nya!!-->
+                <?php
 echo "<a href='halaman_update.php?id=" . $data['id'] . "'>Edit</a> | ";
     echo "<a href='function_hapus.php?id=" . $data['id'] . "' name='hapus'>Hapus</a>  ";
     ?>
-                </td>
-    </tr>
-<?php
+                    </td>
+        </tr>
+    <?php
 }
+
 ?>
+
 
   <p><a href="main.php">Back to home</a> | <a href="logout.php">logout</a></p>
 
