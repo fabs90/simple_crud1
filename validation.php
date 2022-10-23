@@ -30,6 +30,9 @@ if (isset($_POST["kirim"])) {
                 session_start();
                 $_SESSION["username"] = $username;
                 header("Location:main.php");
+
+            } else {
+                echo "<script type='text/javascript'> alert('Wrong username/Password!'); document.location.href='form.php';</script>";
             }
         } else {
             echo "<script type='text/javascript'> alert('Wrong username/Password!'); document.location.href='form.php';</script>";
